@@ -1,3 +1,4 @@
+import {service} from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -19,11 +20,15 @@ import {
 } from '@loopback/rest';
 import {Cliente} from '../models';
 import {ClienteRepository} from '../repositories';
+import {AutenticacionService} from '../services';
+const linkUrl=require("node-fetch");
 
 export class ClienteController {
   constructor(
     @repository(ClienteRepository)
     public clienteRepository : ClienteRepository,
+    @service(AutenticacionService)
+    public srvcioAutenticacion:AutenticacionService
   ) {}
 
   @post('/clientes')
@@ -44,7 +49,21 @@ export class ClienteController {
     })
     cliente: Omit<Cliente, 'id'>,
   ): Promise<Cliente> {
-    return this.clienteRepository.create(cliente);
+    let clve =this.srvcioAutenticacion.generarContrasena();
+    let cifrar=this.srvcioAutenticacion.generarCifrado(clve);
+    cliente.password=cifrar;
+    cliente.rol="cliente";
+    let psna = await this.clienteRepository.create(cliente);
+    // return this.clienteRepository.create(cliente);
+    let destino=cliente.correo;
+    let asunto="Registro en Smart Vehicle";
+    let mensaje=`${cliente.nombre} ${cliente.apellidos}, en Smart Vehicle nos complace contar con su registro, para lo cual puede acceder a nuestros servicios con la direccion de su correo electronico y la contraseña " ${clve} ", estaremos atentos a dar respuesta de manera oportunas a sus solicitudes. Gracias.`;
+    linkUrl(`http://localhost:5000/envio-correo?correo_destino=${destino}&asunto=${asunto}&contenido=${mensaje}`)
+      .then((data: any)=>{
+        console.log(data);
+      })
+  return psna;
+
   }
 
   @get('/clientes/count')

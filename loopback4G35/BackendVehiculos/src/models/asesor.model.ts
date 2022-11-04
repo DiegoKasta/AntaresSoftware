@@ -40,6 +40,24 @@ export class Asesor extends Entity {
   })
   codigo_empleado: string;
 
+  @property({
+    type: 'string',
+    required: true,
+  })
+  correo: string;
+
+  @property({
+    type: 'string',
+    required: false,
+  })
+  password: string;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  rol: string;
+
   @hasMany(() => Solicitudes)
   solicitudes: Solicitudes[];
 

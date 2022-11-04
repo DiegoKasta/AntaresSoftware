@@ -58,6 +58,12 @@ export class Cliente extends Entity {
   })
   password: string;
 
+  @property({
+    type: 'string',
+    required: false,
+  })
+  rol: string;
+
   @hasMany(() => Solicitudes)
   solicitudes: Solicitudes[];
 

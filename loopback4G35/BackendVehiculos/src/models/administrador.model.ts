@@ -1,4 +1,4 @@
-import {Entity, model, property, hasMany} from '@loopback/repository';
+import {Entity, hasMany, model, property} from '@loopback/repository';
 import {Solicitudes} from './solicitudes.model';
 
 @model()
@@ -39,6 +39,24 @@ export class Administrador extends Entity {
     required: true,
   })
   codigo_empleado: string;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  correo: string;
+
+  @property({
+    type: 'string',
+    required: false,
+  })
+  password: string;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  rol: string;
 
   @hasMany(() => Solicitudes)
   solicitudes: Solicitudes[];
