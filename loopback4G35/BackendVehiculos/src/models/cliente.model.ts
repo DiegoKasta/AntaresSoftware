@@ -50,7 +50,13 @@ export class Cliente extends Entity {
     type: 'string',
     required: true,
   })
-  correo_electronico: string;
+  correo: string;
+
+  @property({
+    type: 'string',
+    required: false,
+  })
+  password: string;
 
   @hasMany(() => Solicitudes)
   solicitudes: Solicitudes[];
