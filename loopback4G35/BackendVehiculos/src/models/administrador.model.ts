@@ -26,6 +26,12 @@ export class Administrador extends Entity {
     type: 'string',
     required: true,
   })
+  cedula: string;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
   celular: string;
 
   @property({
@@ -33,12 +39,6 @@ export class Administrador extends Entity {
     required: true,
   })
   sede: string;
-
-  @property({
-    type: 'string',
-    required: true,
-  })
-  codigo_empleado: string;
 
   @property({
     type: 'string',
@@ -54,7 +54,13 @@ export class Administrador extends Entity {
 
   @property({
     type: 'string',
-    required: true,
+    required: false,
+  })
+  codigoEmpleado: string;
+
+  @property({
+    type: 'string',
+    required: false,
   })
   rol: string;
 

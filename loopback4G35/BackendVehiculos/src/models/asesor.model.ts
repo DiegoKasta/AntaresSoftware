@@ -1,4 +1,4 @@
-import {Entity, model, property, hasMany} from '@loopback/repository';
+import {Entity, hasMany, model, property} from '@loopback/repository';
 import {Solicitudes} from './solicitudes.model';
 
 @model()
@@ -26,6 +26,12 @@ export class Asesor extends Entity {
     type: 'string',
     required: true,
   })
+  cedula: string;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
   celular: string;
 
   @property({
@@ -33,12 +39,6 @@ export class Asesor extends Entity {
     required: true,
   })
   sucursal: string;
-
-  @property({
-    type: 'string',
-    required: true,
-  })
-  codigo_empleado: string;
 
   @property({
     type: 'string',
@@ -54,7 +54,13 @@ export class Asesor extends Entity {
 
   @property({
     type: 'string',
-    required: true,
+    required: false,
+  })
+  codigoEmpleado: string;
+
+  @property({
+    type: 'string',
+    required: false,
   })
   rol: string;
 

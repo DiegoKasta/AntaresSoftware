@@ -1,3 +1,4 @@
+import {service} from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -20,10 +21,16 @@ import {
 import {Asesor} from '../models';
 import {AsesorRepository} from '../repositories';
 
+import {llaves} from '../repokeys/llaves';
+import {AutenticacionService} from '../services';
+const linkUrl=require("node-fetch");
+
 export class AsesorController {
   constructor(
     @repository(AsesorRepository)
     public asesorRepository : AsesorRepository,
+    @service(AutenticacionService)
+    public srvcioAutenticacion:AutenticacionService
   ) {}
 
   @post('/asesors')
@@ -44,7 +51,17 @@ export class AsesorController {
     })
     asesor: Omit<Asesor, 'id'>,
   ): Promise<Asesor> {
-    return this.asesorRepository.create(asesor);
+    const clve=this.srvcioAutenticacion.generarContrasena();
+    const cifrar=this.srvcioAutenticacion.generarCifrado(clve);
+    asesor.password=cifrar;
+    asesor.rol="asesor";
+    asesor.codigoEmpleado="ASS"+asesor.cedula;
+    const Assor = await this.asesorRepository.create(asesor);
+    const destino=asesor.correo;
+    const asunto="Notificacion Asesor";
+    const mensaje=`${asesor.nombre} ${asesor.apellidos}, ha sido agregado su correo con la contraseña " ${clve} ", para acceder a la plataforma tecnologica de Smart Vehicle como Asesor Comercial de nuestra compañia.`;
+    linkUrl(`${llaves.urlServicio}/envio-correo?correo_destino=${destino}&asunto=${asunto}&contenido=${mensaje}`);
+    return Assor;
   }
 
   @get('/asesors/count')

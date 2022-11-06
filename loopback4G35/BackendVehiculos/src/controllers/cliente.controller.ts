@@ -5,20 +5,15 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
+  del, get,
+  getModelSchemaRef, param, patch, post, put, requestBody,
+  response
 } from '@loopback/rest';
 import {Cliente} from '../models';
+import {llaves} from '../repokeys/llaves';
 import {ClienteRepository} from '../repositories';
 import {AutenticacionService} from '../services';
 const linkUrl=require("node-fetch");
@@ -49,16 +44,16 @@ export class ClienteController {
     })
     cliente: Omit<Cliente, 'id'>,
   ): Promise<Cliente> {
-    let clve =this.srvcioAutenticacion.generarContrasena();
-    let cifrar=this.srvcioAutenticacion.generarCifrado(clve);
+    const clve =this.srvcioAutenticacion.generarContrasena();
+    const cifrar=this.srvcioAutenticacion.generarCifrado(clve);
     cliente.password=cifrar;
     cliente.rol="cliente";
-    let psna = await this.clienteRepository.create(cliente);
+    const psna = await this.clienteRepository.create(cliente);
     // return this.clienteRepository.create(cliente);
-    let destino=cliente.correo;
-    let asunto="Registro en Smart Vehicle";
-    let mensaje=`${cliente.nombre} ${cliente.apellidos}, en Smart Vehicle nos complace contar con su registro, para lo cual puede acceder a nuestros servicios con la direccion de su correo electronico y la contraseña " ${clve} ", estaremos atentos a dar respuesta de manera oportunas a sus solicitudes. Gracias.`;
-    linkUrl(`http://localhost:5000/envio-correo?correo_destino=${destino}&asunto=${asunto}&contenido=${mensaje}`)
+    const destino=cliente.correo;
+    const asunto="Registro en Smart Vehicle";
+    const mensaje=`${cliente.nombre} ${cliente.apellidos}, en Smart Vehicle nos complace contar con su registro, para lo cual puede acceder a nuestros servicios con la direccion de su correo electronico y la contraseña " ${clve} ", estaremos atentos a dar respuesta de manera oportunas a sus solicitudes. Gracias.`;
+    linkUrl(`${llaves.urlServicio}/envio-correo?correo_destino=${destino}&asunto=${asunto}&contenido=${mensaje}`)
       .then((data: any)=>{
         console.log(data);
       })

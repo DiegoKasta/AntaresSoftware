@@ -1,3 +1,4 @@
+import {service} from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -20,10 +21,16 @@ import {
 import {Administrador} from '../models';
 import {AdministradorRepository} from '../repositories';
 
+import {llaves} from '../repokeys/llaves';
+import {AutenticacionService} from '../services';
+const linkUrl=require("node-fetch");
+
 export class AdministradorController {
   constructor(
     @repository(AdministradorRepository)
     public administradorRepository : AdministradorRepository,
+    @service(AutenticacionService)
+    public srvcioAutenticacion:AutenticacionService
   ) {}
 
   @post('/administradors')
@@ -44,7 +51,17 @@ export class AdministradorController {
     })
     administrador: Omit<Administrador, 'id'>,
   ): Promise<Administrador> {
-    return this.administradorRepository.create(administrador);
+    const clve=this.srvcioAutenticacion.generarContrasena();
+    const cifrar=this.srvcioAutenticacion.generarCifrado(clve);
+    administrador.password=cifrar;
+    administrador.rol="administrador";
+    administrador.codigoEmpleado="ADMIN"+administrador.cedula;
+    const addmon=await this.administradorRepository.create(administrador);
+    const destino=administrador.correo;
+    const asunto="Notificacion Administrador";
+    const mensaje=`${administrador.nombre} ${administrador.apellidos}, ha sido agregado su correo con la contraseña " ${clve} ", para acceder a la plataforma tecnologica de Smart Vehicle como Administrador de la plataforma tecnolgica.`;
+    linkUrl(`${llaves.urlServicio}/envio-correo?correo_destino=${destino}&asunto=${asunto}&contenido=${mensaje}`);
+    return addmon;
   }
 
   @get('/administradors/count')
