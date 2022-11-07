@@ -9,10 +9,11 @@ import {
 } from '@loopback/repository';
 import {
   del, get,
-  getModelSchemaRef, param, patch, post, put, requestBody,
+  getModelSchemaRef, HttpErrors, param, patch, post, put, requestBody,
   response
 } from '@loopback/rest';
-import {Cliente} from '../models';
+import {Cliente, Savecredenciales} from '../models';
+
 import {llaves} from '../repokeys/llaves';
 import {ClienteRepository} from '../repositories';
 import {AutenticacionService} from '../services';
@@ -25,6 +26,28 @@ export class ClienteController {
     @service(AutenticacionService)
     public srvcioAutenticacion:AutenticacionService
   ) {}
+
+  @post("/identifyclient",{ // Metodo Post
+    responses:{'200':{description:"Identificacion Cliente"
+  }}
+  })
+  async identifyclient(
+    @requestBody()credencialesAlmacenadas:Savecredenciales
+  ){
+    const cred=await this.srvcioAutenticacion.identificarCliente(credencialesAlmacenadas.usuario,credencialesAlmacenadas.clave);
+    if (cred) {
+      const tken=this.srvcioAutenticacion.genTokenCliente(cred);
+      return{
+        datos:{
+          nombre:cred.nombre,
+          correo:cred.correo
+        },
+          token:tken
+        }
+    } else {
+      throw new HttpErrors[401]("Datos invalidos, Usuario no existe");
+    }
+  }
 
   @post('/clientes')
   @response(200, {

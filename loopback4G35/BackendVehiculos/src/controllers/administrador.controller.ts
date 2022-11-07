@@ -5,20 +5,14 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
+  del, get,
+  getModelSchemaRef, HttpErrors, param, patch, post, put, requestBody,
+  response
 } from '@loopback/rest';
-import {Administrador} from '../models';
+import {Administrador, Savecredenciales} from '../models';
 import {AdministradorRepository} from '../repositories';
 
 import {llaves} from '../repokeys/llaves';
@@ -32,6 +26,28 @@ export class AdministradorController {
     @service(AutenticacionService)
     public srvcioAutenticacion:AutenticacionService
   ) {}
+
+  @post("/identifyadmin",{ // Metodo Post
+    responses:{'200':{description:"Identificacion Administrador"
+  }}
+  })
+  async identifyadmin(
+    @requestBody()credencialesAlmacenadas:Savecredenciales
+  ){
+    const cred=await this.srvcioAutenticacion.identificarAdmin(credencialesAlmacenadas.usuario,credencialesAlmacenadas.clave);
+    if (cred) {
+      const tken=this.srvcioAutenticacion.genTokenAdmin(cred);
+      return{
+        datos:{
+          nombre:cred.nombre,
+          correo:cred.correo
+        },
+          token:tken
+        }
+    } else {
+      throw new HttpErrors[401]("Datos invalidos, Usuario no existe");
+    }
+  }
 
   @post('/administradors')
   @response(200, {

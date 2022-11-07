@@ -5,20 +5,14 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
+  del, get,
+  getModelSchemaRef, HttpErrors, param, patch, post, put, requestBody,
+  response
 } from '@loopback/rest';
-import {Asesor} from '../models';
+import {Asesor, Savecredenciales} from '../models';
 import {AsesorRepository} from '../repositories';
 
 import {llaves} from '../repokeys/llaves';
@@ -32,6 +26,31 @@ export class AsesorController {
     @service(AutenticacionService)
     public srvcioAutenticacion:AutenticacionService
   ) {}
+
+  @post("/identifyasesr",{//Metodo Post
+    responses:{
+      '200':{
+        description:"Identificacion Cliente"
+      }
+    }
+  })
+  async identifyasesr(
+    @requestBody()credenciales:Savecredenciales
+  ){
+    const cred=await this.srvcioAutenticacion.identificarAsesor(credenciales.usuario, credenciales.clave);
+    if (cred) {
+      const tken=this.srvcioAutenticacion.genTokenAssor(cred);
+      return{
+        datos:{
+          nombre:cred.nombre,
+          correo:cred.correo
+        },
+        token:tken
+      }
+    } else {
+      throw new HttpErrors[401]("Datos invalidos, Usuario no existe");
+    }
+  }
 
   @post('/asesors')
   @response(200, {
