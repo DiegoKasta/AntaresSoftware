@@ -33,7 +33,6 @@ export class AutenticacionService {
   validarToken(ttoken:string){ //Valido el Token generado
     try {
       const datos=webToken.verify(ttoken, llaves.claveWeb);
-      console.log("Label_1",datos);
       return datos;
     } catch {
       return false;
@@ -62,7 +61,7 @@ export class AutenticacionService {
 
   genTokenCliente(cliente:Cliente){ //Genero un Token
     const tken=webToken.sign({
-      data:{
+      infoData:{
         id:cliente.id,
         correo:cliente.correo,
         nombre:cliente.nombre+" "+cliente.apellidos,
@@ -94,7 +93,7 @@ export class AutenticacionService {
 
   genTokenAdmin(admon:Administrador){ //Genero un Token
     const tken=webToken.sign({
-      data:{
+      infoData:{
         id:admon.id,
         correo:admon.correo,
         nombre:admon.nombre+" "+admon.apellidos,
@@ -125,7 +124,7 @@ export class AutenticacionService {
 
   genTokenAssor(asser:Asesor){ //Genero un Token
     const tken=webToken.sign({
-      data:{
+      infoData:{
         id:asser.id,
         correo:asser.correo,
         nombre:asser.nombre+" "+asser.apellidos,

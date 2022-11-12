@@ -42,8 +42,10 @@ export class AsesorController {
       const tken=this.srvcioAutenticacion.genTokenAssor(cred);
       return{
         datos:{
-          nombre:cred.nombre,
-          correo:cred.correo
+          id:cred.id,
+          nombre:cred.nombre+" "+cred.apellidos,
+          correo:cred.correo,
+          rol:cred.rol
         },
         token:tken
       }

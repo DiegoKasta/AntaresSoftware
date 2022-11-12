@@ -13,7 +13,7 @@ export class Vehiculo extends Entity {
     type: 'string',
     required: true,
   })
-  tipo_vehiculo: string;
+  tipoVehiculo: string;
 
   @property({
     type: 'string',
@@ -49,7 +49,7 @@ export class Vehiculo extends Entity {
     type: 'string',
     required: true,
   })
-  tipo_oferta: string;
+  tipoOferta: string;
 
   @property({
     type: 'string',

@@ -1,21 +1,17 @@
+
+import {authenticate} from '@loopback/authentication';
 import {
   Count,
   CountSchema,
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
+  del, get,
+  getModelSchemaRef, param, patch, post, put, requestBody,
+  response
 } from '@loopback/rest';
 import {Vehiculo} from '../models';
 import {VehiculoRepository} from '../repositories';
@@ -25,6 +21,8 @@ export class VehiculoController {
     @repository(VehiculoRepository)
     public vehiculoRepository : VehiculoRepository,
   ) {}
+
+  @authenticate('admin')
 
   @post('/vehiculos')
   @response(200, {
@@ -47,6 +45,7 @@ export class VehiculoController {
     return this.vehiculoRepository.create(vehiculo);
   }
 
+  // @authenticate.skip()
   @get('/vehiculos/count')
   @response(200, {
     description: 'Vehiculo model count',

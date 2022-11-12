@@ -32,15 +32,17 @@ export class ClienteController {
   }}
   })
   async identifyclient(
-    @requestBody()credencialesAlmacenadas:Savecredenciales
+    @requestBody()credenciales:Savecredenciales
   ){
-    const cred=await this.srvcioAutenticacion.identificarCliente(credencialesAlmacenadas.usuario,credencialesAlmacenadas.clave);
+    const cred=await this.srvcioAutenticacion.identificarCliente(credenciales.usuario,credenciales.clave);
     if (cred) {
       const tken=this.srvcioAutenticacion.genTokenCliente(cred);
       return{
         datos:{
-          nombre:cred.nombre,
-          correo:cred.correo
+          id:cred.id,
+          nombre:cred.nombre+" "+cred.apellidos,
+          correo:cred.correo,
+          rol:cred.rol
         },
           token:tken
         }

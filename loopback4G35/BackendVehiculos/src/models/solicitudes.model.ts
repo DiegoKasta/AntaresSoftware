@@ -29,7 +29,7 @@ export class Solicitudes extends Entity {
     type: 'date',
     required: true,
   })
-  fecha_solicitud: string;
+  fechaSolicitud: string;
 
   @property({
     type: 'string',

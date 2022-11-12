@@ -39,8 +39,10 @@ export class AdministradorController {
       const tken=this.srvcioAutenticacion.genTokenAdmin(cred);
       return{
         datos:{
-          nombre:cred.nombre,
-          correo:cred.correo
+          id:cred.id,
+          nombre:cred.nombre+" "+cred.apellidos,
+          correo:cred.correo,
+          rol:cred.rol
         },
           token:tken
         }
@@ -75,7 +77,7 @@ export class AdministradorController {
     const addmon=await this.administradorRepository.create(administrador);
     const destino=administrador.correo;
     const asunto="Notificacion Administrador";
-    const mensaje=`${administrador.nombre} ${administrador.apellidos}, ha sido agregado su correo con la contraseña " ${clve} ", para acceder a la plataforma tecnologica de Smart Vehicle como Administrador de la plataforma tecnolgica.`;
+    const mensaje=`${administrador.nombre} ${administrador.apellidos}, ha sido agregado su correo con la contraseña " ${clve} ", para acceder a la plataforma tecnologica de Smart Vehicle como Administrador de la plataforma tecnologica.`;
     linkUrl(`${llaves.urlServicio}/envio-correo?correo_destino=${destino}&asunto=${asunto}&contenido=${mensaje}`);
     return addmon;
   }

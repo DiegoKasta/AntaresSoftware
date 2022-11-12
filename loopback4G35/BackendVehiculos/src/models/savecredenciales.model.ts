@@ -14,12 +14,11 @@ export class Savecredenciales extends Model {
   })
   clave: string;
 
-  @property({
-    type: 'string',
-    required: true,
-  })
-  rol: string;
-
+  // @property({
+  //   type: 'string',
+  //   required: true,
+  // })
+  // rol: string;
 
   constructor(data?: Partial<Savecredenciales>) {
     super(data);
